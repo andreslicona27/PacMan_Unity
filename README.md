@@ -5,13 +5,13 @@
 - Addition of audio assets
 - Addition of character assets
 - Addition of fonts
-- Design of scene with buttons
 - Changing scene interactions
+- Design of scene with buttons
 ## Update2 16/10/2023
+- Addition of documentation
+- Creation of the script of pacman to move with the arrow keys
 - Changes on the character assets
 - Removed of unnecessary images
-- Creation of the script of pacman to move with the arrow keys
-- Addition of documentation
 ## Update3 22/10/2023
 - Addition of coin 
 - Addition of ghosts in the game 
@@ -20,3 +20,12 @@
 - Addition of GameLogic script
 - Addition of score label
 - Addition of collisions
+## Update4 29/10/2023
+- Addition of scorescript and integration in the game 
+- Addition of game interface script
+- Addition of functions that handles the level of the game depending on the score of the player
+- Addition of more ghosts
+- Addition of documentation
+- Changes in the scale of the scenes
+- Changes in the main menu scene design
+- Removed of unnecessary assets
