@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 /// <summary>
@@ -10,13 +11,9 @@ using UnityEngine.UI;
 /// </summary>
 public class GameLogic : MonoBehaviour
 {
-    public string scoreLabel;
-    public int score;
-    public bool gameRunning;
-    public PlayerMovement pacman;
-    public CoinMovement coin;
-    public Text scoreUI;
-
+    public PacmanScript pacman;
+    public CoinScript coin;
+    public static bool gameRunning;
 
     /// <summary>
     /// Initialice the components that are need int the game.
@@ -25,16 +22,12 @@ public class GameLogic : MonoBehaviour
     {
         try
         {
-            score = 0;
             gameRunning = true;
-
-            pacman = FindObjectOfType<PlayerMovement>();
-            coin = FindObjectOfType<CoinMovement>();
-            scoreUI = FindObjectOfType<Text>();
+            coin = FindObjectOfType<CoinScript>();
         }
         catch (System.Exception e)
         {
-            System.Diagnostics.Debug.WriteLine(e.StackTrace);
+            Debug.Log(e.Message);
         }
     }
 
@@ -47,21 +40,75 @@ public class GameLogic : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            System.Diagnostics.Debug.WriteLine(e.StackTrace);
+            Debug.Log(e.Message);
         }
     }
 
-    // if pacman collisions with coin increase score and update change game variable 
-    // if pacman touch ghost its game over change bool variable 
-
-    // if score divided by 5 increase enemies speed 
-    // if score divided by 10 change maze 
-    // if score divided by 20 increase enemies 
-
-    public void AddPoint()
+    /// <summary>
+    /// Handles the collision of the elements during the game
+    /// </summary>
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        score++;
-        scoreUI.text = "Score: " + score.ToString();
+        try
+        {
+            if (collision.gameObject.CompareTag("pacman") && collision.otherCollider.gameObject.CompareTag("coin"))
+            {
+
+                coin.RandomPosition();
+                ScoreScript.scoreValue++;
+                ChangeGame(ScoreScript.scoreValue);
+            }
+
+            if (collision.gameObject.CompareTag("pacman") && collision.otherCollider.gameObject.CompareTag("ghost"))
+            {
+                Debug.Log("We lost");
+                //gameRunning = false;
+
+                // Show gameover board 
+                // ask to replay or home page 
+                // Safe score and see if its a highscore 
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e.Message);
+        }
     }
 
+    /// <summary>
+    /// Increase the level of the game depending on the score by one of this options:
+    /// - Increasing enemies speed
+    /// - Changing the maze
+    /// - Adding a new ghost
+    /// </summary>
+    /// <param name="score"></param> Used to determined what option would be 
+    public void ChangeGame(int score)
+    {
+        try
+        {
+            // if score divided by 5 increase enemies speed 
+            // if score divided by 10 change maze 
+            // if score divided by 20 increase enemies
+            if (score % 5 == 0 && score % 10 != 0)
+            {
+                GhostScript.speed += 1f;
+                Debug.Log("increase speed");
+            }
+            else if (score % 10 == 0)
+            {
+                //ChangeGame Maze code
+            }
+            else if (score % 20 == 0)
+            {
+                if (GhostScript.ghostNumber <= 7)
+                {
+                    GhostScript.ghostNumber++;
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e.Message);
+        }
+    }
 }

@@ -8,15 +8,8 @@ using UnityEngine;
 /// <summary>
 /// Class that manage the movement of the player in the game.
 /// </summary>
-public class PlayerMovement : MonoBehaviour
-{
-    /// <summary>
-    /// Refereces the gamelogic scripts to access variables 
-    /// </summary>
-    private GameLogic gameLogic;
-
-    public CoinMovement coin;
-
+public class PacmanScript : MonoBehaviour
+{ 
     /// <summary>
     /// References the sprite of pacman when its closed.
     /// </summary>
@@ -75,10 +68,6 @@ public class PlayerMovement : MonoBehaviour
             }
             spriteRenderer.sprite = spriteOpen;
             rb = GetComponent<Rigidbody2D>();
-
-            // Game Interactions Code
-            gameLogic = FindObjectOfType<GameLogic>();
-            coin = FindObjectOfType<CoinMovement>();
         }
         catch (Exception e)
         {
@@ -87,13 +76,13 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Updates que pacaman movement across the game 
+    /// Updates que pacaman movement across the game.
     /// </summary>
     void Update()
     {
         try
         {
-            if (gameLogic.gameRunning)
+            if (GameLogic.gameRunning)
             {
                 MovePacman();
             }
@@ -108,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Move pacman according to the direction the player choose with the arrows keys 
+    /// Move pacman according to the direction the player choose with the arrows keys.
     /// </summary>
     private void MovePacman()
     {
@@ -132,7 +121,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 direction = Vector2.down;
             }
-
             rb.velocity = direction * speed;
         }
         catch (Exception e)
@@ -142,7 +130,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Changes the pacman spirte depending on the direction of the movement of the player 
+    /// Changes the pacman spirte depending on the direction of the movement of the player.
     /// </summary>
     private void ChangePacmanSprite()
     {
@@ -168,7 +156,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Change the direction of the pacman image depending in the direction of the movement 
+    /// Change the direction of the pacman image depending in the direction of the movement.
     /// </summary>
     private void ChangePacmanDirection()
     {
@@ -187,7 +175,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Keeps pacman inside the camara view 
+    /// Keeps pacman inside the camara view.
     /// </summary>
     private void KeepPacmanBoundaries()
     {
@@ -205,28 +193,8 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Manage the collisions between pacman and the elements of the game
+    /// Manage the collisions between pacman and the elements of the game.
     /// </summary>
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        try
-        {
-            if (collision.gameObject.CompareTag("coin"))
-            {
-                coin.RandomPosition();
-                gameLogic.AddPoint();
-            }
-            if (collision.gameObject.CompareTag("ghost"))
-            {
-                System.Diagnostics.Debug.WriteLine("We lost");
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.ToString());
-        }
-    }
-
     private void OnCollisionExit2D(Collision2D collision)
     {
         try
@@ -235,9 +203,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 
             }
-        }catch (Exception e)
+        }
+        catch (Exception e)
         {
-            System.Diagnostics.Debug.WriteLine(e.StackTrace);
+            Debug.Log(e.ToString());
         }
     }
 }

@@ -4,14 +4,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CoinMovement : MonoBehaviour
+/// <summary>
+/// Class that manage the coin´s properties.
+/// </summary>
+public class CoinScript : MonoBehaviour
 {
     private Camera mainCamera;
     private float maxWidth;
     private float maxHeight;
     public float speed = 5f;
 
-    // Start is called before the first frame update
+    /// <summary>
+    /// Initialize the variables in the class
+    /// </summary>
     void Start()
     {
         try
@@ -29,6 +34,9 @@ public class CoinMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Generates a random position for the coin between the camara limits
+    /// </summary>
     public void RandomPosition()
     {
         try

@@ -7,7 +7,7 @@ using UnityEngine;
 /// <summary>
 /// Class that control the movement of the ghost in the middle of the game.
 /// </summary>
-public class GhostMovement : MonoBehaviour
+public class GhostScript : MonoBehaviour
 {
     /// <summary>
     /// Referrences the main camara.
@@ -32,14 +32,20 @@ public class GhostMovement : MonoBehaviour
     /// <summary>
     /// Initialize the variables in the class.
     /// </summary>
-    public float speed = 5f;
+    public static float speed;
 
     /// <summary>
-    /// Refereces the gamelogic scripts to access variables 
+    /// Variable that stores the position of the camera or view on the screen.
     /// </summary>
-    private GameLogic gameLogic;
+    public Vector3 viewPos;
 
-    Vector3 viewPos;
+    /// <summary>
+    /// Stores the amount of ghosts that are currently present in the game.
+    /// </summary>
+    public static int ghostNumber;
+
+    public GameObject ghost4;
+
 
     /// <summary>
     /// Initialize the variables in the class.
@@ -53,7 +59,11 @@ public class GhostMovement : MonoBehaviour
             maxWidth = cameraHeight * mainCamera.aspect;
             maxHeight = mainCamera.orthographicSize;
             direction = new Vector2(1, 1);
-            gameLogic = GetComponent<GameLogic>();
+            speed = 4f;
+            ghostNumber = 3;
+
+            ghost4 = GetComponent<GameObject>();
+            ghost4.SetActive(false);
         }
         catch (Exception e)
         {
@@ -68,11 +78,12 @@ public class GhostMovement : MonoBehaviour
     {
         try
         {
-            //if (gameLogic.gameRunning)
-            //{
-            //}
+            if (GameLogic.gameRunning)
+            {
                 transform.Translate(speed * direction * Time.deltaTime);
+            }
             KeepGhostBoundaries();
+            AddGhost(ghostNumber);
         }
         catch (Exception e)
         {
@@ -100,6 +111,9 @@ public class GhostMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Change the direction in which the ghost is moving.
+    /// </summary>
     private void ChangedDirection()
     {
         try
@@ -120,7 +134,7 @@ public class GhostMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Manage the collisions between ghosts and the walls 
+    /// Manage the collisions between ghosts and the walls. 
     /// </summary>
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -134,6 +148,25 @@ public class GhostMovement : MonoBehaviour
         catch (Exception e)
         {
             Debug.Log(e.ToString());
+        }
+    }
+
+    /// <summary>
+    /// Adds a new ghost to the game.
+    /// </summary>
+    /// <param name="ghosts"></param> Number of ghost that needs to be add.
+    public void AddGhost(int ghosts)
+    {
+        try
+        {
+            if (!ghost4.activeSelf)
+            {
+                ghost4.SetActive(true);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e.Message);
         }
     }
 }
