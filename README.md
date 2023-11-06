@@ -29,3 +29,9 @@
 - Changes in the scale of the scenes
 - Changes in the main menu scene design
 - Removed of unnecessary assets
+## Update5 06/11/2023
+- Addition of game over panel
+- Addition of pause panel
+- Addition of pause button
+- Addition of the records function that shows the 3 highest records
+- Addition of documentation 
