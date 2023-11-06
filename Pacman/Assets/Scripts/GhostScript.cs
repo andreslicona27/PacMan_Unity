@@ -62,8 +62,8 @@ public class GhostScript : MonoBehaviour
             speed = 4f;
             ghostNumber = 3;
 
-            ghost4 = GetComponent<GameObject>();
-            ghost4.SetActive(false);
+            //ghost4 = GetComponent<GameObject>();
+            //ghost4.SetActive(false);
         }
         catch (Exception e)
         {
@@ -83,7 +83,7 @@ public class GhostScript : MonoBehaviour
                 transform.Translate(speed * direction * Time.deltaTime);
             }
             KeepGhostBoundaries();
-            AddGhost(ghostNumber);
+            //AddGhost(ghostNumber);
         }
         catch (Exception e)
         {
@@ -159,10 +159,10 @@ public class GhostScript : MonoBehaviour
     {
         try
         {
-            if (!ghost4.activeSelf)
-            {
-                ghost4.SetActive(true);
-            }
+            //if (!ghost4.activeSelf)
+            //{
+            //    ghost4.SetActive(true);
+            //}
         }
         catch (System.Exception e)
         {

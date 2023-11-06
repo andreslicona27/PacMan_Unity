@@ -9,7 +9,7 @@ using UnityEngine;
 /// Class that manage the movement of the player in the game.
 /// </summary>
 public class PacmanScript : MonoBehaviour
-{ 
+{
     /// <summary>
     /// References the sprite of pacman when its closed.
     /// </summary>
@@ -85,10 +85,10 @@ public class PacmanScript : MonoBehaviour
             if (GameLogic.gameRunning)
             {
                 MovePacman();
+                ChangePacmanSprite();
+                ChangePacmanDirection();
+                KeepPacmanBoundaries();
             }
-            ChangePacmanSprite();
-            ChangePacmanDirection();
-            KeepPacmanBoundaries();
         }
         catch (Exception e)
         {
@@ -201,7 +201,7 @@ public class PacmanScript : MonoBehaviour
         {
             if (collision.gameObject.CompareTag("wall"))
             {
-                
+
             }
         }
         catch (Exception e)
