@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,14 +11,30 @@ using UnityEngine.UI;
 /// </summary>
 public class GameInterface : MonoBehaviour
 {
-
+    /// <summary>
+    /// Represents the TextMeshProGui that shows the first highscore.
+    /// </summary>
     public TextMeshProUGUI highScoreText1;
+
+    /// <summary>
+    /// Represents the TextMeshProGui that shows the second highscore.
+    /// </summary>
     public TextMeshProUGUI highScoreText2;
+
+    /// <summary>
+    /// Represents the TextMeshProGui that shows the third highscore.
+    /// </summary>
     public TextMeshProUGUI highScoreText3;
+
     public Button musicButton;
     public Button soundEffectsButton;
     private ColorBlock activeColor;
     private ColorBlock deactivateColor;
+
+    /// <summary>
+    /// Boolean that handles if the sound effects have to be reproduce.
+    /// </summary>
+    public static bool soundEffect;
 
     void Start()
     {
@@ -28,6 +45,14 @@ public class GameInterface : MonoBehaviour
             if (SceneManager.GetActiveScene().name == "RecordsScene")
             {
                 ShowScores();
+            }
+
+            if (PlayerPrefs.GetString("Sound").Equals("true"))
+            {
+                soundEffect = true;
+            } else
+            {
+                soundEffect = false;
             }
         }
         catch (System.Exception e)
@@ -51,6 +76,11 @@ public class GameInterface : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Change the color of the button when you interact to it.
+    /// </summary>
+    /// <param name="sender">The button that has to change the color.</param>
+    /// <param name="active">Boolean that determines if you activate the button or not.</param>
     public void ChangeButtonColor(Button sender, bool active)
     {
         if (active)
@@ -151,7 +181,7 @@ public class GameInterface : MonoBehaviour
             if (PlayerPrefs.HasKey("HS2"))
             {
                 highScoreText2.text = "2nd: " + PlayerPrefs.GetInt("HS2");
-            } 
+            }
             else
             {
                 highScoreText2.text = "No record";
@@ -166,7 +196,7 @@ public class GameInterface : MonoBehaviour
                 highScoreText3.text = "No record";
             }
         }
-        catch(System.Exception e)
+        catch (System.Exception e)
         {
             Debug.Log(e.Message);
         }

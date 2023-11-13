@@ -41,8 +41,8 @@ public class CoinScript : MonoBehaviour
     {
         try
         {
-            float cameraHeight = 2f * mainCamera.orthographicSize;
-            float cameraWidth = cameraHeight * mainCamera.aspect;
+            float cameraHeight = 2f * mainCamera.orthographicSize * 0.9f;
+            float cameraWidth = cameraHeight * mainCamera.aspect * 0.9f;
 
             float randomX = Random.Range(-cameraWidth / 2f, cameraWidth / 2f);
             float randomY = Random.Range(-cameraHeight / 2f, cameraHeight / 2f);

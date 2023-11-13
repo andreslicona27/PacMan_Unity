@@ -57,7 +57,6 @@ public class PacmanScript : MonoBehaviour
     {
         try
         {
-            // Pacman code
             spriteClosed = Resources.Load<Sprite>("Sprites/pacmanClosed");
             spriteOpen = Resources.Load<Sprite>("Sprites/pacmanOpen");
 

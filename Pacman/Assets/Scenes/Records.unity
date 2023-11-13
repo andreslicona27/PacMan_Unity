@@ -500,6 +500,8 @@ MonoBehaviour:
   highScoreText1: {fileID: 2022537355}
   highScoreText2: {fileID: 547260658}
   highScoreText3: {fileID: 149511867}
+  musicButton: {fileID: 0}
+  soundEffectsButton: {fileID: 0}
 --- !u!1 &547260657
 GameObject:
   m_ObjectHideFlags: 0
@@ -701,7 +703,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1330113569
 GameObject:
@@ -738,6 +740,8 @@ MonoBehaviour:
   highScoreText1: {fileID: 2022537355}
   highScoreText2: {fileID: 547260658}
   highScoreText3: {fileID: 149511867}
+  musicButton: {fileID: 0}
+  soundEffectsButton: {fileID: 0}
 --- !u!114 &1330113571
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -819,13 +823,62 @@ RectTransform:
   - {fileID: 547260660}
   - {fileID: 149511869}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1353976381
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1353976383}
+  - component: {fileID: 1353976382}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1353976382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1353976381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0c9600e958d66f4f8f3342975b103f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highScoreText1: {fileID: 2022537355}
+  highScoreText2: {fileID: 547260658}
+  highScoreText3: {fileID: 149511867}
+  musicButton: {fileID: 0}
+  soundEffectsButton: {fileID: 0}
+--- !u!4 &1353976383
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1353976381}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 511.82568, y: 161.1467, z: -1.4582253}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1754276095
 GameObject:
   m_ObjectHideFlags: 0

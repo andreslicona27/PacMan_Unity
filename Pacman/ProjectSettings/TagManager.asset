@@ -9,6 +9,7 @@ TagManager:
   - coin
   - wall
   - panelGameOver
+  - panelPause
   layers:
   - Default
   - TransparentFX

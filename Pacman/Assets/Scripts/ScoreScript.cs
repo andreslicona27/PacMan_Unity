@@ -25,7 +25,7 @@ public class ScoreScript : MonoBehaviour
     /// </summary>
     void Start()
     {
-        scoreValue = 19;
+        scoreValue = 0;
         scoreText = GetComponent<TextMeshProUGUI>();
     }
 

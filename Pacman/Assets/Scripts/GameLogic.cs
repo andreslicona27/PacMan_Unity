@@ -16,14 +16,18 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     public CoinScript coin;
 
+    public MazeScript maze;
+
     /// <summary>
     /// Variable that controls when the game is running.
     /// </summary>
     public static bool gameRunning;
 
 
-    [SerializeField] GameObject panelGameOver;
-    [SerializeField] GameObject panelPause;
+    public GameObject panelGameOver;
+    public GameObject panelPause;
+    public AudioSource AudioSource;
+    public AudioClip deadclip;
 
     /// <summary>
     /// Initialice the components that are need int the game.
@@ -34,9 +38,14 @@ public class GameLogic : MonoBehaviour
         {
             gameRunning = true;
             coin = FindObjectOfType<CoinScript>();
-            panelGameOver = GameObject.FindWithTag("panelGameOver");
-            panelPause = GameObject.FindWithTag("panelPause");
-            Debug.Log("Am i active: " + panelGameOver.activeSelf);
+            maze = FindObjectOfType<MazeScript>();
+            //AudioSource = GetComponent<AudioSource>();
+            //if (deadAudioSource == null)
+            //{
+            //    Debug.LogError("AudioSource not found on the object.");
+            //}
+            maze.GenerateShapes();
+
         }
         catch (System.Exception e)
         {
@@ -55,13 +64,20 @@ public class GameLogic : MonoBehaviour
             {
                 coin.RandomPosition();
                 ScoreScript.scoreValue++;
+                GhostScript.speed += 0.05f;
                 ChangeGame(ScoreScript.scoreValue);
             }
 
             if (collision.gameObject.CompareTag("pacman") && collision.otherCollider.gameObject.CompareTag("ghost"))
             {
-                gameOver();
-                // Safe score and see if its a highscore 
+                if (GameInterface.soundEffect)
+                {
+
+                }
+                AudioSource.clip = deadclip;
+                AudioSource.Play();
+                GameOver();
+                SafeScore();
             }
         }
         catch (System.Exception e)
@@ -81,25 +97,16 @@ public class GameLogic : MonoBehaviour
     {
         try
         {
-            // if score divided by 5 increase enemies speed 
-            // if score divided by 10 change maze 
-            // if score divided by 20 increase enemies
-            if (score % 5 == 0 && score % 10 != 0)
+            if (score % 10 == 0)
             {
-                GhostScript.speed += 5f;
-                Debug.Log("increase speed");
-            }
-            else if (score % 10 == 0)
-            {
-                //ChangeGame Maze code
-                Debug.Log("change maze");
+                maze.GenerateShapes();
             }
             else if (score % 20 == 0)
             {
                 if (GhostScript.ghostNumber <= 7)
                 {
-                    GhostScript.ghostNumber++;
                     Debug.Log("Increase ghosts");
+                    GhostScript.ghostNumber++;
                 }
             }
         }
@@ -112,14 +119,12 @@ public class GameLogic : MonoBehaviour
     /// <summary>
     /// Handles the game over panel and the boolean variable of the game.
     /// </summary>
-    public void gameOver()
+    public void GameOver()
     {
         try
         {
-            gameRunning = false;
-            panelGameOver.SetActive(true);
-            
-            Debug.Log("Am i active: " + panelGameOver.activeSelf);
+            gameRunning = !gameRunning;
+            panelGameOver.SetActive(!gameRunning);
         }
         catch (System.Exception e)
         {
@@ -136,6 +141,36 @@ public class GameLogic : MonoBehaviour
         {
             gameRunning = !gameRunning;
             panelPause.SetActive(!gameRunning);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Safe the score in cause that it has become a highscore.
+    /// </summary>
+    public void SafeScore()
+    {
+        try
+        {
+            int score1 = PlayerPrefs.GetInt("HS1");
+            int score2 = PlayerPrefs.GetInt("HS2");
+            int score3 = PlayerPrefs.GetInt("HS3");
+
+            if (ScoreScript.scoreValue > score1)
+            {
+                PlayerPrefs.SetInt("HS1", ScoreScript.scoreValue);
+            }
+            else if (ScoreScript.scoreValue > score2)
+            {
+                PlayerPrefs.SetInt("HS2", ScoreScript.scoreValue);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("HS3", ScoreScript.scoreValue);
+            }
         }
         catch (System.Exception e)
         {
