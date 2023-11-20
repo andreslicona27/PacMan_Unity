@@ -44,4 +44,21 @@
 - Fixes in pause panel interactions and make it completly functional
 - Changes in organization of gameobjects in the hierarchy
 - Changes in the design of the main memnu
-- Removed of unnecessary assets 
+- Removed of unnecessary assets
+## Update 7 20/11/2023
+- Addition of audio and music
+- Addition of music and sound effects interactions
+- Addition of exit button
+- Addition of GameOver Scene
+- Addition of text in the Information Scene
+- Addition of Gameplay in the project
+- Addition of APK in the Project
+- Fixes in the records showing
+- Fixes in the try-catch 
+- Fixes in the appearing ghosts
+- Fixes in the maze showing and interactions
+- Fixes in Settings Scene buttons 
+- Changes in buttons interactions
+- Changes in Scenes scaling
+- Removed of unnecesary audios and sprites
+- Removed GameOver panel
