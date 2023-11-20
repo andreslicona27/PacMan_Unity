@@ -8,8 +8,8 @@ TagManager:
   - ghost
   - coin
   - wall
-  - panelGameOver
-  - panelPause
+  - audio
+  - score
   layers:
   - Default
   - TransparentFX

@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditorInternal;
+using System;
+using System.Xml.Serialization;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
-using UnityEngine.SocialPlatforms.Impl;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// In charge of control the logic of the game.
@@ -16,18 +13,29 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     public CoinScript coin;
 
+    /// <summary>
+    /// Variable that references maze during the game.
+    /// </summary>
     public MazeScript maze;
 
     /// <summary>
     /// Variable that controls when the game is running.
     /// </summary>
-    public static bool gameRunning;
+    public static bool gameRunning = false;
 
-
-    public GameObject panelGameOver;
+    /// <summary>
+    /// References the Pause panel so it can handle when to show it.
+    /// </summary>
     public GameObject panelPause;
-    public AudioSource AudioSource;
-    public AudioClip deadclip;
+
+    /// <summary>
+    /// References the audioManager for it to handle all the sound effects of the game
+    /// </summary>
+    AudioManager audioManager;
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("audio").GetComponent<AudioManager>();
+    }
 
     /// <summary>
     /// Initialice the components that are need int the game.
@@ -36,20 +44,47 @@ public class GameLogic : MonoBehaviour
     {
         try
         {
-            gameRunning = true;
-            coin = FindObjectOfType<CoinScript>();
-            maze = FindObjectOfType<MazeScript>();
-            //AudioSource = GetComponent<AudioSource>();
-            //if (deadAudioSource == null)
-            //{
-            //    Debug.LogError("AudioSource not found on the object.");
-            //}
-            maze.GenerateShapes();
-
+            if (SceneManager.GetActiveScene().name == "Game")
+            {
+                coin = FindObjectOfType<CoinScript>();
+                if (coin == null)
+                {
+                    Debug.LogError("CoinScript not found in the scene.");
+                }
+                maze = FindObjectOfType<MazeScript>();
+                if (maze == null)
+                {
+                    Debug.LogError("MazeScript not found in the scene.");
+                }
+                else
+                {
+                    maze.GenerateMaze();
+                }
+                audioManager.PlaySFX(audioManager.startGame);
+            }
         }
         catch (System.Exception e)
         {
-            Debug.Log(e.Message);
+            Debug.LogError(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Verifies if the player tries to start the game or to pause it
+    /// </summary>
+    private void Update()
+    {
+        if (gameRunning)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                PauseGame();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            gameRunning = true;
         }
     }
 
@@ -63,6 +98,7 @@ public class GameLogic : MonoBehaviour
             if (collision.gameObject.CompareTag("pacman") && collision.otherCollider.gameObject.CompareTag("coin"))
             {
                 coin.RandomPosition();
+                audioManager.PlaySFX(audioManager.eatCoin);
                 ScoreScript.scoreValue++;
                 GhostScript.speed += 0.05f;
                 ChangeGame(ScoreScript.scoreValue);
@@ -70,15 +106,15 @@ public class GameLogic : MonoBehaviour
 
             if (collision.gameObject.CompareTag("pacman") && collision.otherCollider.gameObject.CompareTag("ghost"))
             {
-                if (GameInterface.soundEffect)
-                {
-
-                }
-                AudioSource.clip = deadclip;
-                AudioSource.Play();
-                GameOver();
+                audioManager.PlaySFX(audioManager.death);
                 SafeScore();
+                PlayerPrefs.SetInt("score", ScoreScript.scoreValue);
+                SceneManager.LoadScene("GameOver");
             }
+        }
+        catch (System.NullReferenceException e)
+        {
+            Debug.LogError("Null Reference in OnCollisionEnter2D: " + e.ToString());
         }
         catch (System.Exception e)
         {
@@ -88,7 +124,6 @@ public class GameLogic : MonoBehaviour
 
     /// <summary>
     /// Increase the level of the game depending on the score by one of this options:
-    /// - Increasing enemies speed
     /// - Changing the maze
     /// - Adding a new ghost
     /// </summary>
@@ -99,57 +134,72 @@ public class GameLogic : MonoBehaviour
         {
             if (score % 10 == 0)
             {
-                maze.GenerateShapes();
+                maze.GenerateMaze();
+                audioManager.PlaySFX(audioManager.changeMaze);
             }
-            else if (score % 20 == 0)
+
+            if (score % 20 == 0)
             {
                 if (GhostScript.ghostNumber <= 7)
                 {
-                    Debug.Log("Increase ghosts");
                     GhostScript.ghostNumber++;
                 }
             }
         }
+        catch (System.NullReferenceException e)
+        {
+            Debug.LogError("Null Reference in ChangeGame: " + e.ToString());
+        }
         catch (System.Exception e)
         {
-            Debug.Log(e.Message);
+            Debug.LogError("Unknown Exception in ChangeGame: " + e.ToString());
         }
     }
 
     /// <summary>
-    /// Handles the game over panel and the boolean variable of the game.
-    /// </summary>
-    public void GameOver()
-    {
-        try
-        {
-            gameRunning = !gameRunning;
-            panelGameOver.SetActive(!gameRunning);
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log(e.Message);
-        }
-    }
-
-    /// <summary>
-    /// Handles when to pause the game and if the pause panel is showing or not.
+    /// Pause the game and shows the pause panel 
     /// </summary>
     public void PauseGame()
     {
         try
         {
-            gameRunning = !gameRunning;
-            panelPause.SetActive(!gameRunning);
+            gameRunning = false;
+            panelPause.SetActive(true);
+            Time.timeScale = 0;
+        }
+        catch (System.NullReferenceException e)
+        {
+            Debug.LogError("Null Reference in PauseGame: " + e.ToString());
         }
         catch (System.Exception e)
         {
-            Debug.Log(e.Message);
+            Debug.LogError("Unknown Exception in PauseGame: " + e.ToString());
         }
     }
 
     /// <summary>
-    /// Safe the score in cause that it has become a highscore.
+    /// Unpause the game and resumes the game 
+    /// </summary>
+    public void UnpauseGame()
+    {
+        try
+        {
+            gameRunning = true;
+            panelPause.SetActive(false);
+            Time.timeScale = 1;
+        }
+        catch (System.NullReferenceException e)
+        {
+            Debug.LogError("Null Reference in PauseGame: " + e.ToString());
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Unknown Exception in PauseGame: " + e.ToString());
+        }
+    }
+
+    /// <summary>
+    /// Save the score in case it becomes a high score.
     /// </summary>
     public void SafeScore()
     {
@@ -165,16 +215,26 @@ public class GameLogic : MonoBehaviour
             }
             else if (ScoreScript.scoreValue > score2)
             {
-                PlayerPrefs.SetInt("HS2", ScoreScript.scoreValue);
+                if (score1 != score2)
+                {
+                    PlayerPrefs.SetInt("HS2", ScoreScript.scoreValue);
+                }
             }
-            else
+            else if (ScoreScript.scoreValue > score3)
             {
-                PlayerPrefs.SetInt("HS3", ScoreScript.scoreValue);
+                if (score2 != score3)
+                {
+                    PlayerPrefs.SetInt("HS3", ScoreScript.scoreValue);
+                }
             }
+        }
+        catch (PlayerPrefsException e)
+        {
+            Debug.LogError("PlayerPrefs Exception in SafeScore: " + e.ToString());
         }
         catch (System.Exception e)
         {
-            Debug.Log(e.Message);
+            Debug.LogError("Unknown Exception in SafeScore: " + e.ToString());
         }
     }
 }

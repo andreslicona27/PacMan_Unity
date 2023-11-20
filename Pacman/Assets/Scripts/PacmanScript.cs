@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Xml.Serialization;
 using UnityEngine;
 
 /// <summary>
@@ -68,9 +65,21 @@ public class PacmanScript : MonoBehaviour
             spriteRenderer.sprite = spriteOpen;
             rb = GetComponent<Rigidbody2D>();
         }
+        catch (MissingComponentException e)
+        {
+            Debug.LogError("Missing Component: " + e.ToString());
+        }
+        catch (ArgumentNullException e)
+        {
+            Debug.LogError("Argument Null: " + e.ToString());
+        }
+        catch (IOException e)
+        {
+            Debug.LogError("IO Exception: " + e.ToString());
+        }
         catch (Exception e)
         {
-            Debug.Log(e.ToString());
+            Debug.LogError(e.ToString());
         }
     }
 
@@ -89,9 +98,21 @@ public class PacmanScript : MonoBehaviour
                 KeepPacmanBoundaries();
             }
         }
+        catch (NullReferenceException e)
+        {
+            Debug.LogError("Null Reference: " + e.ToString());
+        }
+        catch (IndexOutOfRangeException e)
+        {
+            Debug.LogError("Index Out of Range: " + e.ToString());
+        }
+        catch (InvalidOperationException e)
+        {
+            Debug.LogError("Invalid Operation: " + e.ToString());
+        }
         catch (Exception e)
         {
-            Debug.Log(e.ToString());
+            Debug.LogError(e.ToString());
         }
     }
 
@@ -122,9 +143,21 @@ public class PacmanScript : MonoBehaviour
             }
             rb.velocity = direction * speed;
         }
+        catch (NullReferenceException e)
+        {
+            Debug.LogError("Null Reference: " + e.ToString());
+        }
+        catch (IndexOutOfRangeException e)
+        {
+            Debug.LogError("Index Out of Range: " + e.ToString());
+        }
+        catch (InvalidOperationException e)
+        {
+            Debug.LogError("Invalid Operation: " + e.ToString());
+        }
         catch (Exception e)
         {
-            Debug.Log(e.ToString());
+            Debug.LogError("Unknown Exception: " + e.ToString());
         }
     }
 
@@ -148,6 +181,10 @@ public class PacmanScript : MonoBehaviour
                 lastSpriteChangeTime = Time.time;
             }
         }
+        catch (NullReferenceException e)
+        {
+            Debug.LogError("Null Reference: " + e.ToString());
+        }
         catch (Exception e)
         {
             Debug.Log(e.ToString());
@@ -167,9 +204,17 @@ public class PacmanScript : MonoBehaviour
                 transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             }
         }
+        catch (NullReferenceException e)
+        {
+            Debug.LogError("Null Reference: " + e.ToString());
+        }
+        catch (ArgumentException e)
+        {
+            Debug.LogError("Argument Reference: " + e.ToString());
+        }
         catch (Exception e)
         {
-            Debug.Log(e.ToString());
+            Debug.LogError(e.ToString());
         }
     }
 
@@ -185,27 +230,13 @@ public class PacmanScript : MonoBehaviour
             viewPos.y = Mathf.Clamp(viewPos.y, 0.05f, 0.95f);
             transform.position = Camera.main.ViewportToWorldPoint(viewPos);
         }
-        catch (Exception e)
+        catch (NullReferenceException e)
         {
-            Debug.Log(e.ToString());
-        }
-    }
-
-    /// <summary>
-    /// Manage the collisions between pacman and the elements of the game.
-    /// </summary>
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        try
-        {
-            if (collision.gameObject.CompareTag("wall"))
-            {
-
-            }
+            Debug.LogError("Null Reference: " + e.ToString());
         }
         catch (Exception e)
         {
-            Debug.Log(e.ToString());
+            Debug.LogError(e.ToString());
         }
     }
 }

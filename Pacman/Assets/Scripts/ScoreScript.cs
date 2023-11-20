@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
-using UnityEngine.UI;
 
 /// <summary>
 /// Class that handles the score label properties.
@@ -19,14 +16,29 @@ public class ScoreScript : MonoBehaviour
     /// Used to reference the component that shows the score label during the game.
     /// </summary>
     public TextMeshProUGUI scoreText;
-   
+
     /// <summary>
     /// Initialized the class components 
     /// </summary>
     void Start()
     {
-        scoreValue = 0;
-        scoreText = GetComponent<TextMeshProUGUI>();
+        try
+        {
+            scoreValue = 0;
+            scoreText = GetComponent<TextMeshProUGUI>();
+        }
+        catch(NullReferenceException ex)
+        {
+            Debug.LogError("Null reference exception: " + ex.Message);
+        }
+        catch (MissingComponentException ex)
+        {
+            Debug.LogError("Missing component error: " + ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("General error: " + ex.Message);
+        }
     }
 
     /// <summary>

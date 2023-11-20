@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 /// <summary>
 /// Class that manage the change of scene in the game.
@@ -12,52 +9,66 @@ using UnityEngine.UI;
 public class GameInterface : MonoBehaviour
 {
     /// <summary>
-    /// Represents the TextMeshProGui that shows the first highscore.
-    /// </summary>
-    public TextMeshProUGUI highScoreText1;
-
-    /// <summary>
-    /// Represents the TextMeshProGui that shows the second highscore.
-    /// </summary>
-    public TextMeshProUGUI highScoreText2;
-
-    /// <summary>
-    /// Represents the TextMeshProGui that shows the third highscore.
-    /// </summary>
-    public TextMeshProUGUI highScoreText3;
-
-    public Button musicButton;
-    public Button soundEffectsButton;
-    private ColorBlock activeColor;
-    private ColorBlock deactivateColor;
-
-    /// <summary>
     /// Boolean that handles if the sound effects have to be reproduce.
     /// </summary>
     public static bool soundEffect;
 
+    /// <summary>
+    /// Array that manage the highscores text.
+    /// </summary>
+    public TextMeshProUGUI[] highScores;
+
+    /// <summary>
+    /// Reference the music button text
+    /// </summary>
+    public TextMeshProUGUI musicText;
+
+    /// <summary>
+    /// Reference the sound button text
+    /// </summary>
+    public TextMeshProUGUI soundText;
+
+    /// <summary>
+    /// Reference to the audioManager to handle the sound in the click.
+    /// </summary>
+    AudioManager audioManager;
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("audio").GetComponent<AudioManager>();
+    }
+
+    /// <summary>
+    /// Initialized the code in class 
+    /// </summary>
     void Start()
     {
         try
         {
-            //activeColor = musicButton.colors.normalColor;
-            //deactivateColor = musicButton.colors.disabledColor;
-            if (SceneManager.GetActiveScene().name == "RecordsScene")
+            if (SceneManager.GetActiveScene().name == "Records")
             {
                 ShowScores();
             }
-
-            if (PlayerPrefs.GetString("Sound").Equals("true"))
-            {
-                soundEffect = true;
-            } else
-            {
-                soundEffect = false;
-            }
         }
-        catch (System.Exception e)
+        catch (PlayerPrefsException playerPrefsEx)
         {
-            Debug.LogException(e);
+            Debug.LogError("PlayerPrefs error: " + playerPrefsEx.Message);
+        }
+        catch (IndexOutOfRangeException e)
+        {
+            Debug.LogError("Index out of range: " + e.Message);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError("Error in Start(): " + ex.Message);
+        }
+    }
+
+    private void Update()
+    {
+        if (SceneManager.GetActiveScene().name == "Settings")
+        {
+            UpdateMusicButton();
+            UpdateSoundButton();
         }
     }
 
@@ -70,95 +81,13 @@ public class GameInterface : MonoBehaviour
         {
             SceneManager.LoadScene(sceneName);
         }
-        catch (System.Exception e)
+        catch (NullReferenceException e)
         {
-            Debug.Log(e.Message);
+            Debug.LogError("Null Reference Exception in load scene: " + e.Message);
         }
-    }
-
-    /// <summary>
-    /// Change the color of the button when you interact to it.
-    /// </summary>
-    /// <param name="sender">The button that has to change the color.</param>
-    /// <param name="active">Boolean that determines if you activate the button or not.</param>
-    public void ChangeButtonColor(Button sender, bool active)
-    {
-        if (active)
+        catch (System.Exception ex)
         {
-            ColorBlock colors = sender.colors;
-            colors.normalColor = activeColor.normalColor;
-            sender.colors = colors;
-        }
-        else
-        {
-            sender.colors = deactivateColor;
-        }
-    }
-
-    /// <summary>
-    /// Funtion that handles the music of the game.
-    /// </summary>
-    public void MusicHandler()
-    {
-        try
-        {
-            if (PlayerPrefs.HasKey("Music"))
-            {
-                if (PlayerPrefs.GetString("Music").Equals("true"))
-                {
-                    // play music 
-                    // change color to the actual color
-                    ChangeButtonColor(musicButton, true);
-                    PlayerPrefs.SetString("Music", "true");
-
-                }
-                else
-                {
-                    ChangeButtonColor(musicButton, false);
-                    PlayerPrefs.SetString("Music", "False");
-                    // pause music 
-                    // change color to dark
-                }
-            }
-            else
-            {
-
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log(e.Message);
-        }
-    }
-
-    /// <summary>
-    /// Function that handles the sound effects of the game.
-    /// </summary>
-    public void SoundEffectHandler()
-    {
-        try
-        {
-            if (PlayerPrefs.HasKey("Sound"))
-            {
-                if (PlayerPrefs.GetString("Sound").Equals("true"))
-                {
-                    // activated boolean
-                    // change color to the actual color
-                }
-                else
-                {
-                    // diactivated boolean
-                    // change color to dark
-                }
-            }
-            else
-            {
-
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.Log(e.Message);
+            Debug.LogError("Error loading scene: " + ex.Message);
         }
     }
 
@@ -169,36 +98,142 @@ public class GameInterface : MonoBehaviour
     {
         try
         {
-            if (PlayerPrefs.HasKey("HS1"))
+            for (int i = 0; i < highScores.Length; i++)
             {
-                highScoreText1.text = "1st: " + PlayerPrefs.GetInt("HS1");
-            }
-            else
-            {
-                highScoreText1.text = "No record";
-            }
+                string key = "HS" + (i + 1);
 
-            if (PlayerPrefs.HasKey("HS2"))
-            {
-                highScoreText2.text = "2nd: " + PlayerPrefs.GetInt("HS2");
-            }
-            else
-            {
-                highScoreText2.text = "No record";
-            }
-
-            if (PlayerPrefs.HasKey("HS3"))
-            {
-                highScoreText3.text = "3rd: " + PlayerPrefs.GetInt("HS3");
-            }
-            else
-            {
-                highScoreText3.text = "No record";
+                if (PlayerPrefs.HasKey(key))
+                {
+                    highScores[i].text = $"{i + 1}: " + PlayerPrefs.GetInt(key);
+                }
+                else
+                {
+                    highScores[i].text = "No record";
+                }
             }
         }
-        catch (System.Exception e)
+        catch (PlayerPrefsException playerPrefsEx)
         {
-            Debug.Log(e.Message);
+            Debug.LogError("PlayerPrefs error: " + playerPrefsEx.Message);
         }
+        catch (System.Exception ex)
+        {
+            Debug.LogError("Error in ShowScores(): " + ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Function that handles when we actived or deactived the music 
+    /// </summary>
+    public void ActiveMusic()
+    {
+        try
+        {
+            if (PlayerPrefs.GetInt("Music") == 1)
+            {
+                PlayerPrefs.SetInt("Music", 0);
+                audioManager.MusicHandler(false);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("Music", 1);
+                audioManager.MusicHandler(true);
+            }
+        }
+        catch (PlayerPrefsException playerPrefsEx)
+        {
+            Debug.LogError("PlayerPrefs error: " + playerPrefsEx.Message);
+        }
+        catch (IndexOutOfRangeException e)
+        {
+            Debug.LogError("Index out of range: " + e.Message);
+        }
+        catch (NullReferenceException e)
+        {
+            Debug.LogError("Null Reference Exception in ActiveMusic: " + e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Function that handles when we actived or deactived the sound effects
+    /// </summary>
+    public void ActiveSound()
+    {
+        try
+        {
+            if (PlayerPrefs.GetInt("Sound") == 1)
+            {
+                PlayerPrefs.SetInt("Sound", 0);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("Sound", 1);
+            }
+        }
+        catch (PlayerPrefsException playerPrefsEx)
+        {
+            Debug.LogError("PlayerPrefs error: " + playerPrefsEx.Message);
+        }
+        catch (IndexOutOfRangeException e)
+        {
+            Debug.LogError("Index out of range: " + e.Message);
+        }
+        catch (NullReferenceException e)
+        {
+            Debug.LogError("Null Reference Exception in ActiveSound: " + e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Function that plays the sound of the button 
+    /// </summary>
+    public void PlayClickSound()
+    {
+        try
+        {
+            audioManager.PlaySFX(audioManager.clickButton);
+        }
+        catch (NullReferenceException e)
+        {
+            Debug.LogError("Null Reference exception in playsound" + e.ToString());
+        }
+    }
+
+    /// <summary>
+    /// Function that update the text inside the music button based on the PlayerPrefs
+    /// </summary>
+    private void UpdateMusicButton()
+    {
+        if (PlayerPrefs.GetInt("Music") == 0)
+        {
+            musicText.text = "Music OFF";
+        }
+        else
+        {
+            musicText.text = "Music ON";
+        }
+    }
+
+    /// <summary>
+    /// Function that update the text inside the sound effects button based on the PlayerPrefs
+    /// </summary>
+    private void UpdateSoundButton()
+    {
+        if (PlayerPrefs.GetInt("Sound") == 0)
+        {
+            soundText.text = "Sound Effects OFF";
+        }
+        else
+        {
+            soundText.text = "Sound Effects ON";
+        }
+    }
+
+    /// <summary>
+    /// Function that exits the game
+    /// </summary>
+    public void Exit()
+    {
+        Application.Quit();
     }
 }
